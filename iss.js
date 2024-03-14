@@ -24,4 +24,19 @@ const fetchMyIP = function (callback) {
   });
 };
 
-module.exports = { fetchMyIP };
+const fetchCoordsByIP = (ip, callback) => {
+  request(`http://ipwho.is/${ip}`, (err, res, body) => {
+    if (err) return callback(err, null);
+
+    const data = JSON.parse(body);
+    if (data.success === false) {
+      const msg = `Success status was ${data.success}. Server message: ${data.message}`;
+      return callback(Error(msg), null);
+    }
+
+    const coords = { latitude: data.latitude, longitude: data.longitude };
+    return callback(null, coords);
+  });
+};
+
+module.exports = { fetchMyIP, fetchCoordsByIP };
