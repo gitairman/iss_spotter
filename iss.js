@@ -32,6 +32,10 @@ const fetchCoordsByIP = (ip, callback) => {
       const msg = `Success status was ${data.success}. Server message: ${data.message}`;
       return callback(Error(msg), null);
     }
+    if (res.statusCode !== 200) {
+      const msg = `Status code ${res.statusCode} when fetching IP. Response: ${body}`;
+      return callback(Error(msg), null);
+    }
 
     const coords = { latitude: data.latitude, longitude: data.longitude };
     return callback(null, coords);
@@ -60,6 +64,8 @@ const fetchISSFlyOverTimes = function ({ latitude, longitude }, callback) {
       }
 
       const { response } = JSON.parse(body);
+      if (!response) return callback(Error('No response data!', null));
+
       return callback(null, response);
     }
   );
